@@ -35,6 +35,19 @@ install_pkg() {
     ok "$name installed"
 }
 
+install_build_tools() {
+    log "Installing build tools (gcc, make, unzip)..."
+    case $OS in
+        debian) sudo apt install -y gcc make unzip curl ;;
+        redhat) sudo dnf groupinstall -y "Development Tools" && sudo dnf install -y unzip curl ;;
+        arch)   sudo pacman -S --needed --noconfirm base-devel unzip curl ;;
+        macos)
+            xcode-select -p &>/dev/null || { xcode-select --install; err "Install Xcode CLT then re-run."; exit 1; }
+            brew install make ;;
+    esac
+    ok "Build tools installed"
+}
+
 install_neovim() {
     command -v nvim &>/dev/null && { ok "neovim already installed"; return; }
     log "Installing neovim..."
@@ -47,6 +60,22 @@ install_neovim() {
         macos)  brew install neovim ;;
     esac
     ok "neovim installed"
+}
+
+install_nodejs() {
+    command -v node &>/dev/null && { ok "node already installed"; return; }
+    log "Installing Node.js (needed for Mason LSPs)..."
+    case $OS in
+        debian)
+            curl -fsSL https://deb.nodesource.com/setup_lts.x | sudo -E bash -
+            sudo apt install -y nodejs ;;
+        redhat)
+            curl -fsSL https://rpm.nodesource.com/setup_lts.x | sudo bash -
+            sudo dnf install -y nodejs ;;
+        arch)   sudo pacman -S --needed --noconfirm nodejs npm ;;
+        macos)  brew install node ;;
+    esac
+    ok "Node.js installed"
 }
 
 install_fd() {
@@ -64,6 +93,21 @@ install_fd() {
         macos)  brew install fd ;;
     esac
     ok "fd installed"
+}
+
+install_lazygit() {
+    command -v lazygit &>/dev/null && { ok "lazygit already installed"; return; }
+    log "Installing lazygit..."
+    case $OS in
+        debian|redhat)
+            local ver
+            ver=$(curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+            curl -sL "https://github.com/jesseduffield/lazygit/releases/download/v${ver}/lazygit_${ver}_Linux_x86_64.tar.gz" | tar -xz -C /tmp lazygit
+            sudo install /tmp/lazygit /usr/local/bin/lazygit ;;
+        arch)   sudo pacman -S --needed --noconfirm lazygit ;;
+        macos)  brew install lazygit ;;
+    esac
+    ok "lazygit installed"
 }
 
 install_starship() {
@@ -85,6 +129,18 @@ install_stow() {
     ok "stow installed"
 }
 
+install_clipboard() {
+    [[ "$OS" == "macos" ]] && return  # pbcopy built-in on macOS
+    command -v xclip &>/dev/null && { ok "xclip already installed"; return; }
+    log "Installing xclip (clipboard support for nvim)..."
+    case $OS in
+        debian) sudo apt install -y xclip ;;
+        redhat) sudo dnf install -y xclip ;;
+        arch)   sudo pacman -S --needed --noconfirm xclip ;;
+    esac
+    ok "xclip installed"
+}
+
 set_default_shell_zsh() {
     if [[ "$SHELL" == *"zsh"* ]]; then
         ok "zsh is already the default shell"
@@ -104,10 +160,14 @@ main() {
         /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
     fi
 
+    install_build_tools   # gcc, make, unzip — needed by treesitter + telescope-fzf-native
     install_pkg zsh
     install_neovim
+    install_nodejs        # needed by Mason for LSP servers
     install_pkg ripgrep
     install_fd
+    install_lazygit
+    install_clipboard     # xclip for nvim clipboard = 'unnamedplus'
     install_starship
     install_stow
 
