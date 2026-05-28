@@ -49,17 +49,32 @@ install_build_tools() {
 }
 
 install_neovim() {
-    command -v nvim &>/dev/null && { ok "neovim already installed"; return; }
-    log "Installing neovim..."
+    # Check if neovim >= 0.10 is already installed
+    if command -v nvim &>/dev/null; then
+        local ver major minor
+        ver=$(nvim --version | head -1 | sed 's/NVIM v//')
+        major=$(echo "$ver" | cut -d. -f1)
+        minor=$(echo "$ver" | cut -d. -f2)
+        if [[ "$major" -gt 0 || "$minor" -ge 10 ]]; then
+            ok "neovim $ver already installed"; return
+        fi
+        log "neovim $ver is too old (need >= 0.10), upgrading..."
+    else
+        log "Installing neovim..."
+    fi
     case $OS in
-        debian) sudo apt install -y neovim ;;
-        redhat)
-            [[ "$ID" == "centos" || "$ID" == "rhel" ]] && sudo dnf install -y epel-release
-            sudo dnf install -y neovim ;;
+        debian|redhat)
+            # apt/dnf ship old versions; install from GitHub releases
+            local ver
+            ver=$(curl -s "https://api.github.com/repos/neovim/neovim/releases/latest" \
+                  | grep '"tag_name"' | sed 's/.*"v\([^"]*\)".*/\1/')
+            [[ -z "$ver" ]] && ver="0.11.1"
+            curl -sL "https://github.com/neovim/neovim/releases/download/v${ver}/nvim-linux-x86_64.tar.gz" \
+                | sudo tar -xz -C /usr/local --strip-components=1 ;;
         arch)   sudo pacman -S --needed --noconfirm neovim ;;
         macos)  brew install neovim ;;
     esac
-    ok "neovim installed"
+    ok "neovim $(nvim --version | head -1) installed"
 }
 
 install_nodejs() {
