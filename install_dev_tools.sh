@@ -156,6 +156,14 @@ install_clipboard() {
     ok "xclip installed"
 }
 
+link_dotfiles() {
+    local dotfiles_dir
+    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    log "Linking dotfiles from $dotfiles_dir..."
+    stow --dir="$(dirname "$dotfiles_dir")" --target="$HOME" "$(basename "$dotfiles_dir")"
+    ok "Dotfiles linked"
+}
+
 set_default_shell_zsh() {
     if [[ "$SHELL" == *"zsh"* ]]; then
         ok "zsh is already the default shell"
@@ -185,6 +193,7 @@ main() {
     install_clipboard     # xclip for nvim clipboard = 'unnamedplus'
     install_starship
     install_stow
+    link_dotfiles
 
     set_default_shell_zsh
 

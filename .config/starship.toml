@@ -14,12 +14,14 @@ $directory\
 [](fg:#24283b bg:#414868)\
 $git_branch\
 $git_status\
+$git_state\
 [](fg:#414868 bg:#1d2230)\
 $golang\
 $nodejs\
 $python\
 $rust\
 $java\
+$docker_context\
 [](fg:#1d2230)\
 $fill\
 $cmd_duration\
@@ -27,7 +29,7 @@ $line_break\
 $character"""
 
 [os]
-format = "[$symbol](bg:#1a1b26 fg:#7aa2f7 bold) "
+format = "[ $symbol ](bg:#1a1b26 fg:#7aa2f7 bold)"
 disabled = false
 
 [os.symbols]
@@ -57,6 +59,10 @@ read_only = " 󰌾"
 format = "[ $symbol$branch ]($style)"
 style = "bg:#414868 fg:#7aa2f7"
 symbol = " "
+
+[git_state]
+format = "[ $state( $progress_current/$progress_total) ]($style)"
+style = "bg:#414868 fg:#e0af68"
 
 [git_status]
 format = "[$all_status$ahead_behind ]($style)"
@@ -96,6 +102,12 @@ symbol = " "
 format = "[ $symbol$version ]($style)"
 style = "bg:#1d2230 fg:#f7768e"
 symbol = " "
+
+[docker_context]
+format = "[ $symbol$context ]($style)"
+style = "bg:#1d2230 fg:#7aa2f7"
+symbol = " "
+only_with_files = true
 
 [fill]
 symbol = " "

@@ -39,3 +39,8 @@ export GOPATH="$HOME/go"
 if [[ -d "$HOME/.local/nvim-venv" ]]; then
     export NVIM_PYTHON3="$HOME/.local/nvim-venv/bin/python"
 fi
+
+# nvm
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
