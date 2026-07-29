@@ -36,6 +36,7 @@ export LESS='-R --mouse'
 export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
 export GOPATH="$HOME/go"
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # Starship prompt
 if command -v starship &>/dev/null; then

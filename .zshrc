@@ -35,6 +35,9 @@ export PATH="$HOME/.local/bin:$PATH"
 export PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"
 export GOPATH="$HOME/go"
 
+# Add opencode to PATH
+export PATH="$HOME/.opencode/bin:$PATH"
+
 # Python virtual environment for neovim (if created)
 if [[ -d "$HOME/.local/nvim-venv" ]]; then
     export NVIM_PYTHON3="$HOME/.local/nvim-venv/bin/python"
