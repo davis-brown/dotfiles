@@ -1,35 +1,57 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
 # Tokyo Night — https://github.com/enkia/tokyo-night-vscode-theme
-# bg_dark=#1a1b26  bg=#24283b  bg_highlight=#414868
-# blue=#7aa2f7     cyan=#7dcfff  green=#9ece6a
-# yellow=#e0af68   orange=#ff9e64  red=#f7768e  purple=#bb9af7
-# fg=#c0caf5       comment=#565f89
+# bg #1a1b26   bg_dark #16161e   bg_highlight #292e42   terminal_black #414868
+# fg #c0caf5   fg_dark #a9b1d6   comment #565f89
+# blue #7aa2f7 blue0 #3d59a1     blue5 #89ddff   blue6 #b4f9f8   blue7 #394b70
+# cyan #7dcfff magenta #bb9af7   purple #9d7cd8  orange #ff9e64  yellow #e0af68
+# green #9ece6a teal #1abc9c     red #f7768e     red1 #db4b4b
+#
+# Layout: a bright always-present pill (os + directory) on blue0, then a
+# full-width bar on #24283b holding everything conditional, then a second
+# line with the exit status and the caret.
+#
+# Every conditional module carries its own separator *inside* its own format
+# string. Putting separators in the top-level format instead — the usual
+# powerline approach — leaves stray coloured wedges whenever a module has
+# nothing to render, e.g. the git block outside a repo.
 
 format = """
-[](fg:#1a1b26)\
+[](fg:#3d59a1)\
 $os\
-[](bg:#24283b fg:#1a1b26)\
 $directory\
-[](fg:#24283b bg:#414868)\
+[](fg:#3d59a1 bg:#24283b)\
+$username\
+$hostname\
 $git_branch\
 $git_status\
 $git_state\
-[](fg:#414868 bg:#1d2230)\
-$golang\
-$nodejs\
+$git_metrics\
 $python\
+$nodejs\
+$golang\
 $rust\
 $java\
+$lua\
+$c\
+$package\
 $docker_context\
-[](fg:#1d2230)\
 $fill\
 $cmd_duration\
+$jobs\
+$time\
+[](fg:#24283b)\
 $line_break\
+$status\
 $character"""
 
+# Shown while a command is still being typed on a continued line.
+continuation_prompt = "[∙](fg:#565f89) "
+
+add_newline = true
+
 [os]
-format = "[ $symbol ](bg:#1a1b26 fg:#7aa2f7 bold)"
+format = "[ $symbol ](bg:#3d59a1 fg:#c0caf5 bold)"
 disabled = false
 
 [os.symbols]
@@ -37,16 +59,22 @@ Ubuntu = ""
 Debian = ""
 Fedora = ""
 Arch = ""
+Alpine = ""
 Macos = ""
 Windows = ""
 Linux = ""
 
 [directory]
-format = "[ $path ]($style)"
-style = "bg:#24283b fg:#c0caf5"
-truncation_length = 3
-truncation_symbol = "…/"
+format = "[$path]($style)[$read_only]($read_only_style)[ ](bg:#3d59a1)"
+style = "bg:#3d59a1 fg:#c0caf5 bold"
 read_only = " 󰌾"
+read_only_style = "bg:#3d59a1 fg:#e0af68"
+truncation_length = 4
+truncation_symbol = "…/"
+# Left false deliberately: with it on, the repo root renders "…/dotfiles"
+# rather than "~/dotfiles", and it makes no difference in subdirectories.
+truncate_to_repo = false
+home_symbol = "~"
 
 [directory.substitutions]
 "Documents" = "󰈙"
@@ -55,68 +83,165 @@ read_only = " 󰌾"
 "Pictures" = ""
 "Developer" = "󰲋"
 
+# Only rendered over SSH or as root, so it must bring its own leading space.
+[username]
+show_always = false
+style_user = "bg:#24283b fg:#7dcfff"
+style_root = "bg:#24283b fg:#f7768e bold"
+format = "[ $user]($style)"
+
+[hostname]
+ssh_only = true
+style = "bg:#24283b fg:#7dcfff"
+format = "[@$hostname]($style)"
+
 [git_branch]
-format = "[ $symbol$branch ]($style)"
-style = "bg:#414868 fg:#7aa2f7"
-symbol = " "
+format = "[  $symbol$branch]($style)"
+style = "bg:#24283b fg:#bb9af7 bold"
+symbol = ""
+truncation_length = 24
+truncation_symbol = "…"
+
+# Each state is styled individually rather than sharing one colour, so that
+# "needs attention" (conflicts, deletions) reads differently from routine
+# local edits at a glance.
+[git_status]
+format = "[ $all_status$ahead_behind]($style)"
+style = "bg:#24283b fg:#565f89"
+conflicted = "[ ═${count}](bg:#24283b fg:#f7768e bold)"
+ahead = "[ ⇡${count}](bg:#24283b fg:#9ece6a)"
+behind = "[ ⇣${count}](bg:#24283b fg:#e0af68)"
+diverged = "[ ⇕⇡${ahead_count}⇣${behind_count}](bg:#24283b fg:#ff9e64 bold)"
+up_to_date = ""
+untracked = "[ ?${count}](bg:#24283b fg:#7dcfff)"
+stashed = "[ ≡${count}](bg:#24283b fg:#bb9af7)"
+modified = "[ ~${count}](bg:#24283b fg:#e0af68)"
+staged = "[ +${count}](bg:#24283b fg:#9ece6a)"
+renamed = "[ »${count}](bg:#24283b fg:#7dcfff)"
+deleted = "[ ✘${count}](bg:#24283b fg:#f7768e)"
 
 [git_state]
-format = "[ $state( $progress_current/$progress_total) ]($style)"
-style = "bg:#414868 fg:#e0af68"
+format = "[ $state( $progress_current/$progress_total)]($style)"
+style = "bg:#24283b fg:#ff9e64 bold"
+rebase = "REBASE"
+merge = "MERGE"
+revert = "REVERT"
+cherry_pick = "CHERRY"
+bisect = "BISECT"
+am = "AM"
+am_or_rebase = "AM/REBASE"
 
-[git_status]
-format = "[$all_status$ahead_behind ]($style)"
-style = "bg:#414868 fg:#f7768e"
-conflicted = "!"
-ahead = "⇡${count}"
-behind = "⇣${count}"
-diverged = "⇕⇡${ahead_count}⇣${behind_count}"
-untracked = "?"
-stashed = "$"
-modified = "~"
-staged = "+"
-renamed = "»"
-deleted = "✘"
+[git_metrics]
+disabled = false
+format = "[ +$added]($added_style)[ -$deleted]($deleted_style)"
+added_style = "bg:#24283b fg:#9ece6a"
+deleted_style = "bg:#24283b fg:#f7768e"
+only_nonzero_diffs = true
 
-[golang]
-format = "[ $symbol$version ]($style)"
-style = "bg:#1d2230 fg:#7dcfff"
+[python]
+format = '[ $symbol$version( \($virtualenv\))]($style)'
+style = "bg:#24283b fg:#e0af68"
 symbol = " "
 
 [nodejs]
-format = "[ $symbol$version ]($style)"
-style = "bg:#1d2230 fg:#9ece6a"
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#9ece6a"
 symbol = " "
 
-[python]
-format = "[ $symbol$version ]($style)"
-style = "bg:#1d2230 fg:#e0af68"
+[golang]
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#7dcfff"
 symbol = " "
 
 [rust]
-format = "[ $symbol$version ]($style)"
-style = "bg:#1d2230 fg:#ff9e64"
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#ff9e64"
 symbol = " "
 
 [java]
-format = "[ $symbol$version ]($style)"
-style = "bg:#1d2230 fg:#f7768e"
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#f7768e"
 symbol = " "
 
+[lua]
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#7aa2f7"
+symbol = " "
+
+[c]
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#89ddff"
+symbol = " "
+
+[package]
+format = "[ $symbol$version]($style)"
+style = "bg:#24283b fg:#565f89"
+symbol = "󰏗 "
+
 [docker_context]
-format = "[ $symbol$context ]($style)"
-style = "bg:#1d2230 fg:#7aa2f7"
+format = "[ $symbol$context]($style)"
+style = "bg:#24283b fg:#7aa2f7"
 symbol = " "
 only_with_files = true
 
+# Paints the gap between the left and right groups, which is what turns the
+# prompt into a continuous bar rather than two floating islands.
 [fill]
 symbol = " "
+style = "bg:#24283b"
 
 [cmd_duration]
-format = "[$duration](fg:#565f89) "
+format = "[ 󱎫 $duration]($style)"
+style = "bg:#24283b fg:#e0af68"
 min_time = 2_000
+show_milliseconds = false
+
+[jobs]
+format = "[  $symbol$number]($style)"
+style = "bg:#24283b fg:#bb9af7"
+symbol = ""
+number_threshold = 1
+symbol_threshold = 1
+
+[time]
+disabled = false
+format = "[ $time ]($style)"
+style = "bg:#24283b fg:#565f89"
+time_format = "%H:%M"
+
+# The failing exit code itself, not just a red caret — the previous config
+# recoloured the caret but never showed *what* went wrong.
+[status]
+disabled = false
+# The code itself first, since that is what you actually retype into a search.
+# $signal_name only populates for signals, so 1 renders "✘ 1" while 130
+# renders "✘ 130 INT" rather than the mangled "✘ ^CINT" that per-signal
+# symbols produce when combined with $signal_name.
+format = '[$symbol $status( $signal_name)]($style) '
+style = "fg:#f7768e bold"
+symbol = "✘"
+success_symbol = ""
+map_symbol = false
+recognize_signal_code = true
+pipestatus = true
+# No leading symbol here: each element of $pipestatus is itself rendered with
+# `format` above, so a symbol on the wrapper would show twice.
+pipestatus_format = '[\[$pipestatus\]]($style) '
 
 [character]
-success_symbol = "[❯](fg:#9ece6a)"
-error_symbol = "[❯](fg:#f7768e)"
-vimcmd_symbol = "[❮](fg:#bb9af7)"
+success_symbol = "[❯](fg:#9ece6a bold)"
+error_symbol = "[❯](fg:#f7768e bold)"
+vimcmd_symbol = "[❮](fg:#bb9af7 bold)"
+vimcmd_replace_symbol = "[❮](fg:#ff9e64 bold)"
+vimcmd_visual_symbol = "[❮](fg:#e0af68 bold)"
+
+# Off by default but easy to want later; listed so they are one edit away.
+[kubernetes]
+disabled = true
+format = "[ ☸ $context( \\($namespace\\))]($style)"
+style = "bg:#24283b fg:#7aa2f7"
+
+[aws]
+disabled = true
+format = "[ $symbol$profile( $region)]($style)"
+style = "bg:#24283b fg:#ff9e64"
