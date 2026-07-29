@@ -1,0 +1,38 @@
+# Files in this package that stow should NOT link into $HOME.
+#
+# IMPORTANT: this file *replaces* stow's built-in ignore list rather than
+# extending it, so the built-in defaults are reproduced verbatim below.
+# Dropping \.git in particular would make stow link ~/.git to this repo's
+# git directory and turn $HOME into a git working tree.
+#
+# Patterns are Perl regexes. A pattern with no "/" is matched against each
+# path segment, fully anchored; one containing "/" is matched against the
+# path relative to the package root. Hence \.git matches only ".git", not
+# ".git_hidden_message" -- that one needs its own entry.
+
+# --- stow's built-in defaults (do not drop) ---
+RCS
+.+,v
+
+CVS
+\.\#.+       # CVS conflict files / emacs lock files
+\.cvsignore
+
+\.svn
+_darcs
+\.hg
+
+\.git
+\.gitignore
+
+.+~          # emacs backup files
+\#.*\#       # emacs autosave files
+
+^/README.*
+^/LICENSE.*
+^/COPYING
+
+# --- specific to this package ---
+# Provisioning script, run from the repo; not a dotfile.
+^/install_dev_tools\.sh
+^/\.git_hidden_message
