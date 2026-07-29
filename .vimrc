@@ -1,3 +1,7 @@
+" Leader must be set before any <leader> mapping: mappings capture the value of
+" mapleader at definition time, not at use time.
+let mapleader = ' '
+
 " General
 set nocompatible
 set encoding=utf-8
@@ -29,7 +33,10 @@ set ignorecase
 set smartcase
 set incsearch
 set hlsearch
-nnoremap <silent> <Esc> :nohlsearch<CR>
+" Not mapped to <Esc>: arrow keys and mouse events are themselves escape
+" sequences, so a normal-mode <Esc> map forces vim to wait 'timeoutlen' on
+" every Esc to disambiguate, which shows up as input lag.
+nnoremap <silent> <leader>h :nohlsearch<CR>
 
 " Indentation
 set tabstop=4
@@ -56,8 +63,7 @@ silent! call mkdir(expand('~/.vim/swap'), 'p')
 silent! call mkdir(expand('~/.vim/backup'), 'p')
 silent! call mkdir(expand('~/.vim/undo'), 'p')
 
-" Key mappings
-let mapleader = ' '
+" Key mappings (leader is set at the top of this file)
 nnoremap <leader>w :w<CR>
 nnoremap <leader>q :q<CR>
 nnoremap <C-h> <C-w>h

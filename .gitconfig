@@ -1,0 +1,60 @@
+[user]
+	name = davis-brown
+	email = contact@davisbrown.dev
+
+[init]
+	defaultBranch = main
+
+[core]
+	editor = nvim
+	pager = less -FRX
+	autocrlf = input
+
+[pull]
+	rebase = true
+
+[push]
+	default = simple
+	autoSetupRemote = true
+	followTags = true
+
+[fetch]
+	prune = true
+
+[merge]
+	conflictstyle = zdiff3
+
+[diff]
+	algorithm = histogram
+	colorMoved = default
+
+[rebase]
+	autosquash = true
+	autostash = true
+
+[rerere]
+	enabled = true
+
+[status]
+	short = false
+	showUntrackedFiles = all
+
+[color]
+	ui = auto
+
+[alias]
+	s = status -sb
+	co = checkout
+	sw = switch
+	br = branch -vv
+	ci = commit
+	amend = commit --amend --no-edit
+	unstage = restore --staged
+	last = log -1 HEAD --stat
+	lg = log --graph --pretty=format:'%C(auto)%h%d %s %C(dim)(%an, %ar)' --abbrev-commit
+	wip = !git add -A && git commit -m 'wip'
+
+# Machine-specific git config (work identities, signing keys, credential
+# helpers) that should not be committed. Must come last to win.
+[include]
+	path = ~/.gitconfig.local

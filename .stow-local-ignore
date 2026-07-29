@@ -36,3 +36,5 @@ _darcs
 # Provisioning script, run from the repo; not a dotfile.
 ^/install_dev_tools\.sh
 ^/\.git_hidden_message
+# CI definitions belong to the repo, not to $HOME.
+^/\.forgejo

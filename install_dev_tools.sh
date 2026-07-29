@@ -200,6 +200,29 @@ install_starship() {
     ok "starship installed"
 }
 
+# .zshrc sources these from a fixed path if present. Cloned rather than
+# installed from packages because each distro puts them somewhere different,
+# which would push distro-specific paths into the rc file.
+install_zsh_plugins() {
+    local dir="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
+    local name url spec
+    mkdir -p "$dir"
+    for spec in \
+        "zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions" \
+        "zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting"
+    do
+        name=${spec%% *}
+        url=${spec#* }
+        if [[ -d "$dir/$name/.git" ]]; then
+            ok "$name already installed"
+        else
+            log "Installing $name..."
+            git clone --depth 1 --quiet "$url" "$dir/$name"
+            ok "$name installed"
+        fi
+    done
+}
+
 install_stow() {
     command -v stow &>/dev/null && { ok "stow already installed"; return; }
     log "Installing stow..."
@@ -247,7 +270,12 @@ link_dotfiles() {
     dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
     log "Linking dotfiles from $dotfiles_dir..."
     backup_stow_conflicts "$dotfiles_dir" "$HOME"
-    stow --dir="$(dirname "$dotfiles_dir")" --target="$HOME" "$(basename "$dotfiles_dir")"
+    # The repo root *is* the package, and it lives inside the target ($HOME).
+    # Passing --dir=$HOME with package "dotfiles" makes the stow dir equal the
+    # target, and stow then refuses to touch anything beneath its own stow dir,
+    # silently skipping the whole package. Point --dir at the repo instead and
+    # stow ".".
+    stow --dir="$dotfiles_dir" --target="$HOME" .
     ok "Dotfiles linked"
 }
 
@@ -295,8 +323,11 @@ main() {
     install_pkg ripgrep rg
     install_fd
     install_lazygit
+    install_pkg git
+    install_pkg tmux
     install_clipboard     # xclip for nvim clipboard = 'unnamedplus'
     install_starship
+    install_zsh_plugins   # sourced by .zshrc
     install_stow
     link_dotfiles
 
