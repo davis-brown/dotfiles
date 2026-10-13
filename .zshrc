@@ -69,3 +69,7 @@ fi
 # defined, or it will not wrap them.
 [[ -f $ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh ]] &&
     source $ZSH_PLUGIN_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+export TERM=xterm
+
+# systemd user ssh-agent: keys added once stay loaded until logout
+[ -z "$SSH_AUTH_SOCK" ] && [ -S "$XDG_RUNTIME_DIR/openssh_agent" ] && export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/openssh_agent"
