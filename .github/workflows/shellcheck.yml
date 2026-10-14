@@ -6,16 +6,10 @@ on:
 
 jobs:
   shellcheck:
-    runs-on: docker
-    container:
-      image: node:20-bookworm
+    # shellcheck is preinstalled on GitHub's Ubuntu runners.
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-
-      - name: Install shellcheck
-        run: |
-          apt-get update -qq
-          apt-get install -y -qq shellcheck
 
       - name: Lint shell scripts
         run: shellcheck --severity=warning install_dev_tools.sh

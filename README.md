@@ -37,7 +37,7 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.config/starship.toml` | `~/.config/` |
 | `.gitconfig`, `.tmux.conf`, `.vimrc` | `~/` |
 
-`install_dev_tools.sh`, `.git_hidden_message` and `.forgejo/` are excluded via
+`install_dev_tools.sh`, `.git_hidden_message` and `.github/` are excluded via
 `.stow-local-ignore`.
 
 ### Shell config
