@@ -35,6 +35,10 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.config/shell/{env,interactive}.sh` | `~/.config/shell/` |
 | `.config/nvim/` | `~/.config/nvim` (LazyVim) |
 | `.config/starship.toml` | `~/.config/` |
+| `.config/ghostty/` | `~/.config/ghostty/` (config + tokyonight_night theme) |
+| `.config/herdr/config.toml` | `~/.config/herdr/` |
+| `.config/opencode/opencode.jsonc` | `~/.config/opencode/` |
+| `.config/git/ignore` | `~/.config/git/` (global gitignore) |
 | `.gitconfig`, `.tmux.conf`, `.vimrc` | `~/` |
 
 `install_dev_tools.sh`, `.git_hidden_message` and `.github/` are excluded via
