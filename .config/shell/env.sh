@@ -54,9 +54,16 @@ if [ -d "$HOME/.local/nvim-venv" ]; then
     export NVIM_PYTHON3="$HOME/.local/nvim-venv/bin/python"
 fi
 
-# systemd user ssh-agent: keys added once stay loaded until logout
-if [ -z "${SSH_AUTH_SOCK:-}" ] && [ -S "${XDG_RUNTIME_DIR:-}/openssh_agent" ]; then
-    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/openssh_agent"
+# systemd user ssh-agent: keys added once stay loaded until logout. Arch's
+# ssh-agent.socket listens on ssh-agent.socket, Debian's unit on openssh_agent.
+if [ -z "${SSH_AUTH_SOCK:-}" ]; then
+    for _sock in "${XDG_RUNTIME_DIR:-}/ssh-agent.socket" "${XDG_RUNTIME_DIR:-}/openssh_agent"; do
+        if [ -S "$_sock" ]; then
+            export SSH_AUTH_SOCK="$_sock"
+            break
+        fi
+    done
+    unset _sock
 fi
 
 # Machine-specific environment that should not be committed.
