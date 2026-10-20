@@ -30,6 +30,9 @@ path_append() {
     esac
 }
 
+# Homebrew on Apple silicon; Intel Macs use /usr/local/bin, already on PATH.
+path_prepend "/opt/homebrew/sbin"
+path_prepend "/opt/homebrew/bin"
 path_prepend "/usr/local/go/bin"
 path_prepend "$HOME/go/bin"
 path_prepend "$HOME/.opencode/bin"

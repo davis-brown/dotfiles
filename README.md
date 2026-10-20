@@ -9,19 +9,32 @@ git clone git@github.com:davis-brown/dotfiles.git ~/dotfiles
 ~/dotfiles/install_dev_tools.sh
 ```
 
-`install_dev_tools.sh` is idempotent — re-run it any time. It installs build
-tools, neovim (>= 0.10, from GitHub releases since distro packages lag), Node,
-ripgrep, fd, lazygit, tmux, xclip, starship, fzf, zoxide, eza, bat, mise and
-stow; links the dotfiles; and installs the global mise tools.
+`install_dev_tools.sh` is idempotent — re-run it any time. It installs the few
+things mise cannot (a compiler, tmux, bash-completion, the clipboard tools,
+stow, and on macOS a current bash), then mise, the JetBrainsMono Nerd Font on
+machines with a desktop; links the dotfiles; installs the tools with mise; and
+makes bash the login shell.
 
-The shell is bash. The Omarchy setup needs bash >= 4, so on macOS install it
-with `brew install bash` and make it the login shell.
+### Tools: mise
+
+- `.config/mise/config.toml` — every machine: node, go, gh, claude, codex.
+- `.config/mise/cli-tools.toml` — neovim, ripgrep, fd, lazygit, starship, fzf,
+  zoxide, eza, bat, herdr, opencode, jq, gum, hunk. Omarchy installs these
+  with pacman, so the install script links this file into
+  `~/.config/mise/conf.d/` only on machines *without* Omarchy; on Omarchy,
+  mise's copies would otherwise shadow the packaged ones.
+
+To add a tool, put it in whichever of the two fits and run `mise install`.
 
 To link the dotfiles without installing anything:
 
 ```sh
-stow --dir ~/dotfiles --target ~ .
+stow --no-folding --dir ~/dotfiles --target ~ .
 ```
+
+`--no-folding` keeps directories real and links file by file. Without it, a
+directory missing from `$HOME` becomes a single symlink into the repo, and
+anything programs later write there lands in the working tree.
 
 Note the `--dir`/`.` form. The repo root *is* the Stow package and it lives
 inside the target, so the more obvious `stow --dir ~ --target ~ dotfiles` makes
@@ -37,7 +50,7 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.bashrc`, `.profile` | `~/` |
 | `.config/shell/{env,interactive}.sh` | `~/.config/shell/` |
 | `.config/shell/omarchy/` | `~/.config/shell/omarchy/` (portable Omarchy shell) |
-| `.config/mise/config.toml` | `~/.config/mise/` (global mise tools) |
+| `.config/mise/{config,cli-tools}.toml` | `~/.config/mise/` (global mise tools) |
 | `.config/nvim/` | `~/.config/nvim` (LazyVim) |
 | `.config/starship.toml` | `~/.config/` |
 | `.config/ghostty/` | `~/.config/ghostty/` (config + tokyonight_night theme) |

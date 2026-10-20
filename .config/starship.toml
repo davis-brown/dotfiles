@@ -1,241 +1,32 @@
-"$schema" = 'https://starship.rs/config-schema.json'
-
-# Tokyo Night — https://github.com/enkia/tokyo-night-vscode-theme
-# bg #1a1b26   bg_dark #16161e   bg_highlight #292e42   terminal_black #414868
-# fg #c0caf5   fg_dark #a9b1d6   comment #565f89
-# blue #7aa2f7 blue0 #3d59a1     blue5 #89ddff   blue6 #b4f9f8   blue7 #394b70
-# cyan #7dcfff magenta #bb9af7   purple #9d7cd8  orange #ff9e64  yellow #e0af68
-# green #9ece6a teal #1abc9c     red #f7768e     red1 #db4b4b
-#
-# Framed two-line prompt. No background fills anywhere, so the prompt sits on
-# the terminal background rather than competing with it; $fill draws a dim rule
-# from the last left-hand segment out to the clock.
-#
-#   ╭─  ~/code/api-service on  main  ≡1 ~1 +1 ?1 ⇡1 +2 ──────  23:14
-#   ╰─❯
-#
-# Every conditional module carries its own separator and padding *inside* its
-# own format string. Putting separators in the top-level format instead leaves
-# stray glyphs whenever a module renders nothing — e.g. a git block outside a
-# repository, or a language whose toolchain is not installed.
-
-format = """
-[╭─](fg:#565f89)\
-$os\
-$username\
-$hostname\
-$directory\
-$git_branch\
-$git_status\
-$git_state\
-$git_metrics\
-$python$nodejs$golang$rust$java$lua$c\
-$docker_context\
-[ ](fg:#565f89)\
-$fill\
-$cmd_duration\
-$jobs\
-$time\
-$line_break\
-[╰─](fg:#565f89)$status$character"""
-
-continuation_prompt = "[│ ](fg:#565f89)"
 add_newline = true
-
-# Draws the rule between the left group and the clock. This is what makes the
-# frame read as one piece rather than two disconnected ends.
-[fill]
-symbol = "─"
-style = "fg:#414868"
-
-[os]
-format = "[ $symbol](fg:#7aa2f7)"
-disabled = false
-
-[os.symbols]
-Ubuntu = ""
-Debian = ""
-Fedora = ""
-Arch = ""
-Alpine = ""
-Macos = ""
-Windows = ""
-Linux = ""
-
-[directory]
-format = "[ $path]($style)[$read_only]($read_only_style)"
-style = "fg:#7aa2f7 bold"
-read_only = " 󰌾"
-read_only_style = "fg:#e0af68"
-truncation_length = 4
-truncation_symbol = "…/"
-# Left off deliberately: with it on, a repo root renders "…/dotfiles" rather
-# than "~/dotfiles", and it changes nothing in subdirectories.
-truncate_to_repo = false
-home_symbol = "~"
-
-[directory.substitutions]
-"Documents" = "󰈙"
-"Downloads" = ""
-"Music" = "󰝚"
-"Pictures" = ""
-"Developer" = "󰲋"
-
-# Only rendered over SSH or as root, so it brings its own leading space.
-[username]
-show_always = false
-style_user = "fg:#7dcfff"
-style_root = "fg:#f7768e bold"
-format = "[ $user]($style)"
-
-[hostname]
-ssh_only = true
-style = "fg:#7dcfff"
-format = "[@$hostname]($style)"
-
-[git_branch]
-format = "[ on](fg:#565f89)[ $symbol$branch]($style)"
-style = "fg:#bb9af7 bold"
-symbol = " "
-truncation_length = 24
-truncation_symbol = "…"
-
-# Each state is coloured individually so that "needs attention" (conflicts,
-# deletions, divergence) reads differently at a glance from routine local edits.
-[git_status]
-format = "[ $all_status$ahead_behind]($style)"
-style = "fg:#565f89"
-up_to_date = ""
-conflicted = "[ ═${count}](fg:#f7768e bold)"
-ahead = "[ ⇡${count}](fg:#9ece6a)"
-behind = "[ ⇣${count}](fg:#e0af68)"
-diverged = "[ ⇕⇡${ahead_count}⇣${behind_count}](fg:#ff9e64 bold)"
-untracked = "[ ?${count}](fg:#7dcfff)"
-stashed = "[ ≡${count}](fg:#bb9af7)"
-modified = "[ ~${count}](fg:#e0af68)"
-staged = "[ +${count}](fg:#9ece6a)"
-renamed = "[ »${count}](fg:#7dcfff)"
-deleted = "[ ✘${count}](fg:#f7768e)"
-
-[git_state]
-format = "[ $state( $progress_current/$progress_total)]($style)"
-style = "fg:#ff9e64 bold"
-rebase = "REBASE"
-merge = "MERGE"
-revert = "REVERT"
-cherry_pick = "CHERRY"
-bisect = "BISECT"
-am = "AM"
-am_or_rebase = "AM/REBASE"
-
-# Each sign sits inside its own optional group, so "+" and "-" do not render
-# as bare punctuation when the corresponding count is zero.
-[git_metrics]
-disabled = false
-format = "([ +$added]($added_style))([ -$deleted]($deleted_style))"
-added_style = "fg:#9ece6a"
-deleted_style = "fg:#f7768e"
-only_nonzero_diffs = true
-
-# Language formats are wrapped in an optional group: $version is empty when a
-# project is detected but its toolchain is not installed, and the group then
-# suppresses the symbol too rather than leaving it dangling.
-[python]
-format = '([ $symbol$version( \($virtualenv\))]($style))'
-style = "fg:#e0af68"
-symbol = " "
-
-[nodejs]
-format = "([ $symbol$version]($style))"
-style = "fg:#9ece6a"
-symbol = " "
-
-[golang]
-format = "([ $symbol$version]($style))"
-style = "fg:#7dcfff"
-symbol = " "
-
-[rust]
-format = "([ $symbol$version]($style))"
-style = "fg:#ff9e64"
-symbol = " "
-
-[java]
-format = "([ $symbol$version]($style))"
-style = "fg:#f7768e"
-symbol = " "
-
-[lua]
-format = "([ $symbol$version]($style))"
-style = "fg:#7aa2f7"
-symbol = " "
-
-[c]
-format = "([ $symbol$version]($style))"
-style = "fg:#89ddff"
-symbol = " "
-
-[package]
-format = "([ $symbol$version]($style))"
-style = "fg:#565f89"
-symbol = "󰏗 "
-disabled = true
-
-[docker_context]
-format = "[ $symbol$context]($style)"
-style = "fg:#7aa2f7"
-symbol = " "
-only_with_files = true
-
-[cmd_duration]
-format = "[ 󱎫 $duration]($style)"
-style = "fg:#e0af68"
-min_time = 2_000
-show_milliseconds = false
-
-[jobs]
-format = "[ $symbol$number]($style)"
-style = "fg:#bb9af7"
-symbol = " "
-number_threshold = 1
-symbol_threshold = 1
-
-[time]
-disabled = false
-format = "[  $time ]($style)"
-style = "fg:#565f89"
-time_format = "%H:%M"
-
-# The failing code itself, not just a red caret. $signal_name only populates
-# for signals, so 1 renders "✘ 1" while 130 renders "✘ 130 INT"; combining
-# per-signal symbols with $signal_name instead yields the mangled "✘ ^CINT".
-[status]
-disabled = false
-format = '[$symbol $status( $signal_name)]($style) '
-style = "fg:#f7768e bold"
-symbol = "✘"
-success_symbol = ""
-map_symbol = false
-recognize_signal_code = true
-pipestatus = true
-# No symbol here: each element of $pipestatus is itself rendered with `format`
-# above, so a symbol on the wrapper would print twice.
-pipestatus_format = '[\[$pipestatus\]]($style) '
+command_timeout = 200
+format = "[$directory$git_branch$git_status]($style)$character"
 
 [character]
-success_symbol = "[❯](fg:#9ece6a bold)"
-error_symbol = "[❯](fg:#f7768e bold)"
-vimcmd_symbol = "[❮](fg:#bb9af7 bold)"
-vimcmd_replace_symbol = "[❮](fg:#ff9e64 bold)"
-vimcmd_visual_symbol = "[❮](fg:#e0af68 bold)"
+error_symbol = "[✗](bold cyan)"
+success_symbol = "[❯](bold cyan)"
 
-# Off by default but pre-styled, so they are a one-line edit away.
-[kubernetes]
-disabled = true
-format = '[ ☸ $context( \($namespace\))]($style)'
-style = "fg:#7aa2f7"
+[directory]
+truncation_length = 2
+truncation_symbol = "…/"
+repo_root_style = "bold cyan"
+repo_root_format = "[$repo_root]($repo_root_style)[$path]($style)[$read_only]($read_only_style) "
 
-[aws]
-disabled = true
-format = "[ $symbol$profile( $region)]($style)"
-style = "fg:#ff9e64"
+[git_branch]
+format = "[$branch]($style) "
+style = "italic cyan"
+
+[git_status]
+format     = '[$all_status]($style)'
+style      = "cyan"
+ahead      = "⇡${count} "
+diverged   = "⇕⇡${ahead_count}⇣${behind_count} "
+behind     = "⇣${count} "
+conflicted = " "
+up_to_date = " "
+untracked  = "? "
+modified   = " "
+stashed    = ""
+staged     = ""
+renamed    = ""
+deleted    = ""

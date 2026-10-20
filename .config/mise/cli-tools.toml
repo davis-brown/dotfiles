@@ -1,0 +1,21 @@
+# Command-line tools for machines without Omarchy, which installs these with
+# pacman instead. install_dev_tools.sh links this file into conf.d/ there; on
+# Omarchy it stays unlinked, so mise's copies never shadow the packaged ones.
+[tools]
+neovim = "latest"
+ripgrep = "latest"
+fd = "latest"
+lazygit = "latest"
+starship = "latest"
+fzf = "latest"
+zoxide = "latest"
+bat = "latest"
+# eza publishes no macOS builds; install_dev_tools.sh uses Homebrew there.
+eza = { version = "latest", os = ["linux"] }
+herdr = "latest"
+"aqua:anomalyco/opencode" = "latest"
+# Used by the Omarchy shell functions: jq by the herdr layouts, gum by gd,
+# hunk by tds and hds.
+jq = "latest"
+gum = "latest"
+hunk = "latest"
