@@ -56,6 +56,7 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.config/ghostty/` | `~/.config/ghostty/` (config + tokyonight_night theme) |
 | `.config/herdr/config.toml` | `~/.config/herdr/` |
 | `.config/opencode/opencode.jsonc` | `~/.config/opencode/` |
+| `.claude/CLAUDE.md` | `~/.claude/` (personal Claude Code instructions) |
 | `.config/git/ignore` | `~/.config/git/` (global gitignore) |
 | `.config/tmux/tmux.conf` | `~/.config/tmux/` (Omarchy's tmux config) |
 | `.gitconfig`, `.vimrc` | `~/` |
