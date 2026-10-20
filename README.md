@@ -17,7 +17,7 @@ makes bash the login shell.
 
 ### Tools: mise
 
-- `.config/mise/config.toml` — every machine: node, go, gh, claude, codex.
+- `.config/mise/config.toml` — every machine: node, go, gh, claude.
 - `.config/mise/cli-tools.toml` — neovim, ripgrep, fd, lazygit, starship, fzf,
   zoxide, eza, bat, herdr, opencode, jq, gum, hunk. Omarchy installs these
   with pacman, so the install script links this file into
