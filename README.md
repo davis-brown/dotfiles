@@ -60,6 +60,7 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.config/git/ignore` | `~/.config/git/` (global gitignore) |
 | `.config/tmux/tmux.conf` | `~/.config/tmux/` (Omarchy's tmux config) |
 | `.config/omarchy/backgrounds/tokyo-night/` | `~/.config/omarchy/backgrounds/tokyo-night/` (skyline wallpaper) |
+| `.config/omarchy/branding/screensaver.txt` | `~/.config/omarchy/branding/` (screensaver text) |
 | `.gitconfig`, `.vimrc` | `~/` |
 
 `install_dev_tools.sh`, `generate_wallpaper.py`, `.git_hidden_message` and
