@@ -59,10 +59,12 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.claude/CLAUDE.md` | `~/.claude/` (personal Claude Code instructions) |
 | `.config/git/ignore` | `~/.config/git/` (global gitignore) |
 | `.config/tmux/tmux.conf` | `~/.config/tmux/` (Omarchy's tmux config) |
+| `.config/omarchy/backgrounds/tokyo-night/` | `~/.config/omarchy/backgrounds/tokyo-night/` (skyline wallpaper) |
 | `.gitconfig`, `.vimrc` | `~/` |
 
-`install_dev_tools.sh`, `.git_hidden_message` and `.github/` are excluded via
-`.stow-local-ignore`.
+`install_dev_tools.sh`, `generate_wallpaper.py`, `.git_hidden_message` and
+`.github/` are excluded via `.stow-local-ignore`. `generate_wallpaper.py`
+renders the skyline wallpaper; see its docstring.
 
 ### Shell config
 
