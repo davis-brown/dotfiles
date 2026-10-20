@@ -9,12 +9,28 @@ case $- in
       *) return ;;
 esac
 
-# History
-HISTSIZE=10000
-HISTFILESIZE=20000
+# Omarchy's shell: history, completion, aliases, functions, and the mise,
+# starship, zoxide and fzf hooks. On Omarchy, use the live copy so it follows
+# Omarchy updates; elsewhere, the portable copy kept in this repo.
+if [ -n "${OMARCHY_PATH:-}" ] && [ -r "$OMARCHY_PATH/default/bash/rc" ]; then
+    . "$OMARCHY_PATH/default/bash/rc"
+else
+    . "$HOME/.config/shell/omarchy/rc"
+fi
+
+# Everything below overrides Omarchy's defaults.
+
+# History: share between terminals as each command finishes. Appended after
+# the prompt hooks, because starship reads $? first thing and `history -a`
+# ahead of it would reset every exit status to 0. PROMPT_COMMAND is an array
+# from bash 5.1 on, and starship and zoxide register themselves that way.
 HISTCONTROL=ignoreboth:erasedups
-shopt -s histappend
-PROMPT_COMMAND="history -a; ${PROMPT_COMMAND}"
+if (( BASH_VERSINFO[0] > 5 || (BASH_VERSINFO[0] == 5 && BASH_VERSINFO[1] >= 1) )); then
+    PROMPT_COMMAND+=("history -a")
+else
+    # shellcheck disable=SC2128,SC2178 # a plain string before bash 5.1
+    PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND; }history -a"
+fi
 
 # Shell options
 shopt -s checkwinsize
@@ -22,22 +38,8 @@ shopt -s globstar
 shopt -s cdspell
 shopt -s autocd 2>/dev/null
 
-# Completion
-if ! shopt -oq posix; then
-    if [ -f /usr/share/bash-completion/bash_completion ]; then
-        . /usr/share/bash-completion/bash_completion
-    elif [ -f /etc/bash_completion ]; then
-        . /etc/bash_completion
-    fi
-fi
-
 # Shared aliases and colors
 [ -f "$HOME/.config/shell/interactive.sh" ] && . "$HOME/.config/shell/interactive.sh"
-
-# Prompt
-if command -v starship >/dev/null 2>&1; then
-    eval "$(starship init bash)"
-fi
 
 # Machine-specific bash config that should not be committed.
 [ -f "$HOME/.bashrc.local" ] && . "$HOME/.bashrc.local"

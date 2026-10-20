@@ -1,0 +1,33 @@
+if command -v mise &> /dev/null; then
+  eval "$(mise activate bash)"
+fi
+
+if [[ $- == *i* ]] && [[ ${TERM:-} != "dumb" ]] && command -v starship &> /dev/null; then
+  eval "$(starship init bash)"
+fi
+
+if command -v zoxide &> /dev/null; then
+  eval "$(zoxide init bash)"
+fi
+
+if command -v try &> /dev/null; then
+  try() {
+    unset -f try
+    eval "$(SHELL=/bin/bash command try init ~/Work/tries)"
+    try "$@"
+  }
+fi
+
+# dotfiles: upstream sources Arch's paths only. fzf >= 0.48 prints its own
+# integration; older packages ship the scripts in a distro-specific place.
+if command -v fzf &> /dev/null; then
+  if fzf --bash &> /dev/null; then
+    eval "$(fzf --bash)"
+  else
+    for f in /usr/share/fzf/{completion,key-bindings}.bash \
+             /usr/share/doc/fzf/examples/{completion,key-bindings}.bash; do
+      [[ -f $f ]] && source "$f"
+    done
+    unset f
+  fi
+fi

@@ -1,0 +1,21 @@
+# Portable copy of Omarchy's interactive bash setup, for machines without
+# Omarchy. On Omarchy, ~/.bashrc sources the live $OMARCHY_PATH/default/bash/rc
+# instead, so this copy never shadows Omarchy's own updates.
+#
+# Copied from omarchy 4.0.6 (MIT, https://github.com/basecamp/omarchy),
+# default/bash/. Departures from upstream are marked "dotfiles:". Left out:
+#   env-bootstrap  OMARCHY_PATH and PATH; env.sh handles the mise shims
+#   completions    completion for the `omarchy` command
+#   fns/drives     needs omarchy-drive-select
+
+_omarchy_dir="$HOME/.config/shell/omarchy"
+
+source "$_omarchy_dir/envs"
+source "$_omarchy_dir/shell"
+source "$_omarchy_dir/aliases"
+for f in "$_omarchy_dir"/fns/*; do source "$f"; done
+unset f
+source "$_omarchy_dir/init"
+[[ $- == *i* ]] && bind -f "$_omarchy_dir/inputrc"
+
+unset _omarchy_dir

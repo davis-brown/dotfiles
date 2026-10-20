@@ -200,27 +200,49 @@ install_starship() {
     ok "starship installed"
 }
 
-# .zshrc sources these from a fixed path if present. Cloned rather than
-# installed from packages because each distro puts them somewhere different,
-# which would push distro-specific paths into the rc file.
-install_zsh_plugins() {
-    local dir="${XDG_DATA_HOME:-$HOME/.local/share}/zsh/plugins"
-    local name url spec
-    mkdir -p "$dir"
-    for spec in \
-        "zsh-autosuggestions https://github.com/zsh-users/zsh-autosuggestions" \
-        "zsh-syntax-highlighting https://github.com/zsh-users/zsh-syntax-highlighting"
-    do
-        name=${spec%% *}
-        url=${spec#* }
-        if [[ -d "$dir/$name/.git" ]]; then
-            ok "$name already installed"
-        else
-            log "Installing $name..."
-            git clone --depth 1 --quiet "$url" "$dir/$name"
-            ok "$name installed"
-        fi
+# The tools Omarchy's shell setup hooks into (.config/shell/omarchy). Each is
+# optional there, so a distro that lacks one only loses that feature rather than
+# failing the whole run.
+install_shell_extras() {
+    local name
+    for name in fzf zoxide eza bat; do
+        ( install_pkg "$name" ) || err "could not install $name; skipping"
     done
+    # Debian ships bat as `batcat`; link it the same way as fd.
+    if ! command -v bat &>/dev/null && command -v batcat &>/dev/null; then
+        mkdir -p ~/.local/bin
+        ln -sf "$(command -v batcat)" ~/.local/bin/bat
+        ok "bat linked from batcat"
+    fi
+}
+
+install_mise() {
+    command -v mise &>/dev/null && { ok "mise already installed"; return; }
+    log "Installing mise..."
+    case $OS in
+        arch)  sudo pacman -S --needed --noconfirm mise ;;
+        macos) brew install mise ;;
+        # Not packaged for these; the official installer puts it in ~/.local/bin.
+        *)     curl -fsSL https://mise.run | sh ;;
+    esac
+    ok "mise installed"
+}
+
+# Install the global toolset from ~/.config/mise/config.toml, which only exists
+# once the dotfiles are linked.
+install_mise_tools() {
+    local mise_bin dotfiles_dir
+    mise_bin=$(command -v mise || echo "$HOME/.local/bin/mise")
+    dotfiles_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+    # Inside the repo, mise sees .config/mise/config.toml as a project config
+    # and warns until it is trusted.
+    "$mise_bin" trust --quiet "$dotfiles_dir/.config/mise/config.toml"
+    log "Installing mise tools..."
+    if "$mise_bin" install --yes; then
+        ok "mise tools installed"
+    else
+        err "mise install failed; re-run it once the problem is fixed"
+    fi
 }
 
 install_stow() {
@@ -279,33 +301,6 @@ link_dotfiles() {
     ok "Dotfiles linked"
 }
 
-set_default_shell_zsh() {
-    local zsh_path current user
-    user=$(id -un)
-    if ! zsh_path=$(command -v zsh); then
-        err "zsh not on PATH; skipping default shell change"
-        return
-    fi
-    # $SHELL reflects the *running* shell, not the login shell on record.
-    if command -v getent &>/dev/null; then
-        current=$(getent passwd "$user" | cut -d: -f7)
-    else
-        current="${SHELL:-}"
-    fi
-    if [[ "$current" == "$zsh_path" ]]; then
-        ok "zsh is already the default shell"
-        return
-    fi
-    grep -qx "$zsh_path" /etc/shells 2>/dev/null || echo "$zsh_path" | sudo tee -a /etc/shells >/dev/null
-    # Plain `chsh` prompts through PAM even with passwordless sudo, which hangs a
-    # non-interactive run; go through sudo so it can't block on a password.
-    if sudo chsh -s "$zsh_path" "$user"; then
-        ok "default shell set to zsh (log out and back in to apply)"
-    else
-        err "could not change default shell; run: sudo chsh -s $zsh_path $user"
-    fi
-}
-
 main() {
     log "Installing dev tools..."
     detect_os
@@ -317,7 +312,6 @@ main() {
     fi
 
     install_build_tools   # gcc, make, unzip — needed by treesitter + telescope-fzf-native
-    install_pkg zsh
     install_neovim
     install_nodejs        # needed by Mason for LSP servers
     install_pkg ripgrep rg
@@ -327,13 +321,13 @@ main() {
     install_pkg tmux
     install_clipboard     # xclip for nvim clipboard = 'unnamedplus'
     install_starship
-    install_zsh_plugins   # sourced by .zshrc
+    install_shell_extras  # fzf, zoxide, eza, bat for the Omarchy shell setup
+    install_mise
     install_stow
     link_dotfiles
+    install_mise_tools
 
-    set_default_shell_zsh
-
-    ok "Done! Log out and back in to use zsh."
+    ok "Done! Open a new terminal to pick up the shell config."
 }
 
 main "$@"
