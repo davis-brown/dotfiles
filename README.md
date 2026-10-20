@@ -57,8 +57,8 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.config/herdr/config.toml` | `~/.config/herdr/` |
 | `.config/opencode/opencode.jsonc` | `~/.config/opencode/` |
 | `.config/git/ignore` | `~/.config/git/` (global gitignore) |
-| `.config/tmux/dotfiles.conf` | `~/.config/tmux/` (picked by `~/.tmux.conf`) |
-| `.gitconfig`, `.tmux.conf`, `.vimrc` | `~/` |
+| `.config/tmux/tmux.conf` | `~/.config/tmux/` (Omarchy's tmux config) |
+| `.gitconfig`, `.vimrc` | `~/` |
 
 `install_dev_tools.sh`, `.git_hidden_message` and `.github/` are excluded via
 `.stow-local-ignore`.
@@ -93,9 +93,9 @@ anything:
 
 - Ghostty keeps Omarchy's live theme include and falls back to Tokyo Night
   where Omarchy is absent.
-- `~/.tmux.conf` would hide Omarchy's `~/.config/tmux/tmux.conf`, since tmux
-  reads only the first of the two it finds. It defers to Omarchy's when that
-  exists and loads `.config/tmux/dotfiles.conf` otherwise.
+- tmux and herdr use Omarchy's configs on every machine, so they behave the
+  same everywhere and herdr's keys keep mirroring tmux's. tmux's `?` opens
+  Omarchy's keybinding menu where it exists and `list-keys` elsewhere.
 - Neovim's Omarchy theme plugins are not tracked; Stow links file by file
   inside the existing `~/.config/nvim`, so they are left in place.
 
@@ -109,7 +109,7 @@ Anything host-specific goes in these, none of which are tracked:
 | `~/.shellrc.local` | `.config/shell/interactive.sh` (interactive) |
 | `~/.bashrc.local` | `.bashrc` |
 | `~/.gitconfig.local` | `.gitconfig`, via `[include]` — work identities, signing keys |
-| `~/.tmux.conf.local` | `.tmux.conf` |
+| `~/.tmux.conf.local` | `.config/tmux/tmux.conf` |
 
 ## Notes
 
