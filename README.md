@@ -59,6 +59,7 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.claude/CLAUDE.md` | `~/.claude/` (personal Claude Code instructions) |
 | `.config/git/ignore` | `~/.config/git/` (global gitignore) |
 | `.config/tmux/tmux.conf` | `~/.config/tmux/` (Omarchy's tmux config) |
+| `.config/hypr/autostart.lua` | `~/.config/hypr/` (opens Firefox and Ghostty at login) |
 | `.config/omarchy/backgrounds/tokyo-night/` | `~/.config/omarchy/backgrounds/tokyo-night/` (skyline wallpaper) |
 | `.config/omarchy/branding/screensaver.txt` | `~/.config/omarchy/branding/` (screensaver text) |
 | `.gitconfig`, `.vimrc` | `~/` |
