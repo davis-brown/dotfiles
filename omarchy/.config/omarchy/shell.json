@@ -1,0 +1,106 @@
+{
+  "bar": {
+    "layout": {
+      "center": [
+        {
+          "format": "dddd h:mm AP",
+          "formatAlt": "d MMMM 'W'ww yyyy",
+          "id": "omarchy.clock",
+          "verticalFormat": "HH\n—\nmm"
+        }
+      ],
+      "centerBegin": [
+        {
+          "id": "omarchy.indicators"
+        }
+      ],
+      "centerEnd": [
+        {
+          "cities": [
+            {
+              "lat": 35.46756,
+              "lon": -97.51643,
+              "name": "Oklahoma City",
+              "region": "Oklahoma, US",
+              "zone": "America/Chicago"
+            },
+            {
+              "lat": 40.71427,
+              "lon": -74.00597,
+              "name": "New York",
+              "region": "US",
+              "zone": "America/New_York"
+            }
+          ],
+          "id": "omarchy.elsewhen"
+        },
+        {
+          "id": "omarchy.weather"
+        },
+        {
+          "id": "omarchy.system-update"
+        }
+      ],
+      "left": [
+        {
+          "id": "omarchy.menu"
+        },
+        {
+          "id": "omarchy.workspaces"
+        }
+      ],
+      "right": [
+        {
+          "id": "omarchy.tray"
+        },
+        {
+          "id": "omarchy.keyboard-layout"
+        },
+        {
+          "id": "omarchy.tailscale"
+        },
+        {
+          "id": "omarchy.agents"
+        },
+        {
+          "id": "omarchy.bluetooth"
+        },
+        {
+          "id": "omarchy.network"
+        },
+        {
+          "id": "omarchy.audio"
+        },
+        {
+          "id": "omarchy.monitor"
+        },
+        {
+          "id": "omarchy.power",
+          "showPercentage": true
+        }
+      ],
+      "tray": []
+    },
+    "position": "top",
+    "transparent": true
+  },
+  "dock": {
+    "pinned": [
+      "org.gnome.Nautilus",
+      "firefox",
+      "com.mitchellh.ghostty",
+      "omacalc",
+      "omawrite"
+    ]
+  },
+  "idle": {
+    "lock": 600,
+    "screensaver": 300
+  },
+  "plugins": [
+    {
+      "id": "typecraft.oma-cast"
+    }
+  ],
+  "version": 1
+}

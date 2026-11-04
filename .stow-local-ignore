@@ -40,3 +40,4 @@ _darcs
 ^/\.git_hidden_message
 # CI definitions belong to the repo, not to $HOME.
 ^/\.github
+^/omarchy                # Omarchy-only package, stowed by install_dev_tools.sh

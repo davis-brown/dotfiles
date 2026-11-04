@@ -7,3 +7,6 @@ hl.on("hyprland.start", function()
   hl.exec_cmd(o.launch("firefox"), { workspace = "1 silent" })
   hl.exec_cmd(o.launch("ghostty"), { workspace = "2 silent" })
 end)
+
+-- Warm the screen in the evening on the schedule in hyprsunset.conf.
+o.launch_on_start("hyprsunset")
