@@ -1,9 +1,13 @@
 [tools]
+bitwarden = "latest"
+bun = "latest"
 claude = "latest"
 codex = "latest"
 gh = "latest"
 go = "latest"
 node = "26.8.2"
+"npm:@moonshot-ai/kimi-code" = "latest"
+shellcheck = "latest"
 
 [settings.upgrade]
 auto_prune = false
