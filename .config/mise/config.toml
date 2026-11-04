@@ -9,5 +9,8 @@ node = "26.8.2"
 "npm:@moonshot-ai/kimi-code" = "latest"
 shellcheck = "latest"
 
+[settings]
+minimum_release_age = "0s"
+
 [settings.upgrade]
 auto_prune = false
