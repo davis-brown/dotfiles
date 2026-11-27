@@ -35,9 +35,6 @@ _darcs
 # --- specific to this package ---
 # Provisioning script, run from the repo; not a dotfile.
 ^/install_dev_tools\.sh
-# Wallpaper generator, run from the repo; its PNG output is what gets linked.
-^/generate_wallpaper\.py
 ^/\.git_hidden_message
 # CI definitions belong to the repo, not to $HOME.
 ^/\.github
-^/omarchy                # Omarchy-only package, stowed by install_dev_tools.sh

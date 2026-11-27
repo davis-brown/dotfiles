@@ -112,8 +112,7 @@ backup_stow_conflicts() {
             log "Backing up existing $dest -> $dest.pre-stow.$stamp"
             mv "$dest" "$dest.pre-stow.$stamp"
         fi
-    # omarchy/ is its own package (stowed separately), not part of the root one.
-    done < <(find "$pkg_dir" \( -name .git -o -path "$pkg_dir/omarchy" \) -prune -o -type f -print0)
+    done < <(find "$pkg_dir" -name .git -prune -o -type f -print0)
 }
 
 link_dotfiles() {
@@ -131,12 +130,6 @@ link_dotfiles() {
     # in the working tree.
     stow --no-folding --dir="$DOTFILES_DIR" --target="$HOME" .
 
-    # Hyprland and Omarchy shell config only means anything on Omarchy. A fresh
-    # install has stock copies of these as real files, so back them up first.
-    if [[ $OMARCHY == 1 ]]; then
-        backup_stow_conflicts "$DOTFILES_DIR/omarchy" "$HOME"
-        stow --no-folding --dir="$DOTFILES_DIR" --target="$HOME" omarchy
-    fi
     ok "Dotfiles linked"
 }
 

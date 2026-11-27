@@ -61,38 +61,17 @@ The repo is a single flat Stow package, so paths map straight onto `$HOME`:
 | `.config/tmux/tmux.conf` | `~/.config/tmux/` (Omarchy's tmux config) |
 | `.gitconfig`, `.vimrc` | `~/` |
 
-`install_dev_tools.sh`, `generate_wallpaper.py`, `.git_hidden_message`,
-`.github/` and `omarchy/` are excluded via `.stow-local-ignore`.
-`generate_wallpaper.py` renders the skyline wallpaper; see its docstring.
+`install_dev_tools.sh`, `.git_hidden_message` and `.github/` are excluded via
+`.stow-local-ignore`.
 
-### Omarchy-only package
+### Omarchy desktop config
 
-`omarchy/` is a second Stow package for config that only means anything on
-Omarchy. `install_dev_tools.sh` links it only when `/usr/share/omarchy`
-exists, so other machines never see it. To link it by hand:
+Hyprland, bar, wallpaper and Touch Bar config that only means anything on
+Omarchy lives in its own repo, `~/omarchy-dotfiles`, stowed separately:
 
 ```sh
-stow --no-folding --dir ~/dotfiles --target ~ omarchy
+stow --no-folding --dir ~/omarchy-dotfiles --target ~ .
 ```
-
-| Path under `omarchy/` | What it is |
-| --- | --- |
-| `.config/hypr/bindings.lua` | Dictation on Super+D |
-| `.config/hypr/input.lua`, `macbook.lua` | Touchpad gestures, MacBook keyboard and touchpad |
-| `.config/hypr/looknfeel.lua` | Rounded corners |
-| `.config/hypr/monitors.lua` | 2x scaling for the MacBook's display |
-| `.config/hypr/autostart.lua` | Firefox and Ghostty at login, hyprsunset |
-| `.config/hypr/hyprsunset.conf` | Night light from 20:00 to 07:00 |
-| `.config/omarchy/shell.json` | Bar layout, dock, idle timeouts |
-| `.config/omarchy/plugins/davis.background/` | Background plugin cloned from `omarchy.background` |
-| `.config/omarchy/hooks/theme-set.d/10-owe-sync` | Refreshes owe on theme change |
-| `.config/omarchy/backgrounds/tokyo-night/` | Skyline wallpaper |
-| `.config/omarchy/branding/screensaver.txt` | Screensaver text |
-
-`hyprland.lua` is deliberately left untracked: Omarchy's updates may rewrite
-it, and it only `require`s the files above. `omarchy refresh hyprland` and
-`omarchy refresh shell` copy stock files over these symlinks, so check
-`git status` and restow afterwards.
 
 ### Shell config
 
