@@ -70,6 +70,7 @@ Hyprland, bar, wallpaper and Touch Bar config that only means anything on
 Omarchy lives in its own repo, `~/omarchy-dotfiles`, stowed separately:
 
 ```sh
+git clone git@github.com:davis-brown/omarchy-dotfiles.git ~/omarchy-dotfiles
 stow --no-folding --dir ~/omarchy-dotfiles --target ~ .
 ```
 
